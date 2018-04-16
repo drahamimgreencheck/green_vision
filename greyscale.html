@@ -126,9 +126,31 @@
     				var r = 2;
     				var kernel_size = (r + 1) << 1;
 
-    				//jsfeat.imgproc.gaussian_blur(img_u8, img_u8, kernel_size, 0);
+    				jsfeat.imgproc.gaussian_blur(img_u8, img_u8, kernel_size, 4);
 
-    				jsfeat.imgproc.canny(img_u8, img_u8, 20, 50);
+
+                    //very good one
+                    //jsfeat.imgproc.canny(img_u8, img_u8, 15, 60);
+                    //scaler = scaler * .40;
+
+                    //jsfeat.imgproc.canny(img_u8, img_u8, 5, 110);
+                    //scaler = scaler * .40;
+
+                    //jsfeat.imgproc.canny(img_u8, img_u8, 5, 300);
+                    //scaler = scaler * .40;
+
+
+                    //jsfeat.imgproc.canny(img_u8, img_u8, 5, 150);
+                    //scaler = scaler * .38;
+
+
+                    //jsfeat.imgproc.canny(img_u8, img_u8, 10, 100);
+                    //scaler = scaler * .38;
+
+
+                    jsfeat.imgproc.canny(img_u8, img_u8, 1, 127);
+
+    				//jsfeat.imgproc.canny(img_u8, img_u8, 20, 50);
     				//jsfeat.imgproc.canny(img_u8, img_u8, 32, 73);
                     //jsfeat.imgproc.canny(img_u8, img_u8, 50, 90);
                     //jsfeat.imgproc.canny(img_u8, img_u8, 70, 110);
@@ -156,7 +178,7 @@
     				    scaler = canvasHeight;
     				}
 
-    				scaler = scaler * .40;//.4;
+    				scaler = scaler * .12;//.4;
 
     				var h = jsfeat.imgproc.hough_transform(img_u8, 1, (Math.PI / 540), scaler);
 
