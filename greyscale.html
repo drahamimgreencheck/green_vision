@@ -128,15 +128,13 @@
 
     				//jsfeat.imgproc.gaussian_blur(img_u8, img_u8, kernel_size, 0);
 
-    				//jsfeat.imgproc.canny(img_u8, img_u8, 20, 50);
+    				jsfeat.imgproc.canny(img_u8, img_u8, 20, 50);
     				//jsfeat.imgproc.canny(img_u8, img_u8, 32, 73);
-                    //jsfeat.imgproc.canny(img_u8, img_u8, 50, 90);
-                    //jsfeat.imgproc.canny(img_u8, img_u8, 50, 90);
                     //jsfeat.imgproc.canny(img_u8, img_u8, 50, 90);
                     //jsfeat.imgproc.canny(img_u8, img_u8, 70, 110);
                     //jsfeat.imgproc.canny(img_u8, img_u8, 90, 130);
                     //jsfeat.imgproc.canny(img_u8, img_u8, 130, 180);
-                    jsfeat.imgproc.canny(img_u8, img_u8, 90, 200);
+                    //jsfeat.imgproc.canny(img_u8, img_u8, 90, 200);
 
 
                     // render result back to canvas
@@ -158,7 +156,7 @@
     				    scaler = canvasHeight;
     				}
 
-    				scaler = scaler * .35;//.4;
+    				scaler = scaler * .40;//.4;
 
     				var h = jsfeat.imgproc.hough_transform(img_u8, 1, (Math.PI / 540), scaler);
 
@@ -219,6 +217,25 @@
                 drawHoughTransform(lines, ctx);
 
                 return lines;
+            }
+
+            function findParallelVerticals(lines, canvasWidth) {
+                var mthresh = .2//.1;
+                var line;
+                var verts = [];
+                for (var i = 0; i < lines.length; i++) {
+                    line = lines[i];
+                    var mostlyVert = Math.pow(line.slope > 5);
+                    if(mostlyVert) {
+                        verts.push(line);
+                    }
+                }
+
+                for (var i = 0; i < verts.length; i++) {
+                    var vert = verts[i];
+                }
+
+                canvasWidth
             }
 
             function findRectangles(lines) {
