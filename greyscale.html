@@ -113,117 +113,6 @@
                 stat.add("bagel");
             }
 
-            function doHoughTransform(h, ctx) {
-                var lines = [];
-                for (var i = 0; i < h.length; i++) {
-
-                    var rho = h[i][0];
-                    var theta = h[i][1];
-
-                    var a = Math.cos(theta);
-                    var b = Math.sin(theta);
-
-                    var x0 = a * rho;
-                    var y0 = b * rho;
-
-                    var pt1 = {};
-                    pt1.x = Math.round(x0 + 1000 * (-b));
-                    pt1.y = Math.round(y0 + 1000 * (a));
-                    var pt2 = {};
-                    pt2.x = Math.round(x0 - 1000 * (-b));
-                    pt2.y = Math.round(y0 - 1000 * (a));
-
-                    //y = mx + b
-                    //b = y - mx
-                    var slope = (pt2.y - pt1.y)/(pt2.x - pt1.x);
-                    var intercept = pt2.y - slope * pt2.x;
-
-                    //line
-                    var line = {};
-                    line.start = pt1;
-                    line.end = pt2;
-                    line.slope = slope;
-                    line.intercept = intercept
-                    lines.push(line);
-                }
-
-                //deDupe(lines);
-                var rectangles = findRectangles(lines);
-                drawRectangles(rectangles, ctx);
-                //drawHoughTransform(rectangles, ctx);
-
-                return lines;
-            }
-
-            function findRectangles(lines) {
-                //find all rectangles
-                var rectangles = [];
-                var fourLines = [];
-                var mthresh = .2//.1;
-                let cornerCount = 0;
-                for (var i = 0; i < lines.length; i++) {
-                    fourLines.push(lines[i]);
-                    var line = lines[i]; //to be changed in the next loop
-                    for(var j = 1; j < lines.length; j++) {
-                        let line2 = lines[j];
-                        let perpendic = Math.abs(line.slope + 1/line2.slope) < mthresh;
-                        if(perpendic) {
-                            cornerCount++;
-                            line = line2;
-                            fourLines.push(line2)
-                        }
-                        //try and close the rectangle
-                        if(cornerCount === 3) {
-                            let lineStart = fourLines[0];
-                            let perpendicStart = Math.abs(lineStart.slope + 1/line2.slope) < mthresh;
-                            if(perpendicStart) {
-                                rectangles.push(fourLines);
-                            }
-                        }
-                    }
-                }
-                return rectangles;
-            }
-
-            //eliminate duplicate lines
-            function deDupe(lines) {
-                var bthresh = 5;//5;
-                var mthresh = .2//.1;
-                for (var i = 0; i < lines.length; i++) {
-                    var line = lines[i];
-                    for(var j = 1; j < lines.length; j++) {
-                        let line2 = lines[j];
-                        let bsame = Math.abs(line.intercept - line2.intercept) < bthresh;
-                        let msame = Math.abs(line.slope - line2.slope) < mthresh;
-                        if(bsame && msame) {
-                            lines.splice(j, 1);
-                            j--;
-                        }
-                    }
-                }
-                console.log(lines.length);
-            }
-
-            function drawRectangles(rectangles, ctx) {
-                for(var i = 0; i < rectangles.length; i++) {
-                    drawHoughTransform(rectangles[i], ctx);
-                }
-            }
-
-            function drawHoughTransform(lines, ctx) {
-                var l = {};
-                for (var i = 0; i < lines.length; i++) {
-                    l = lines[i];
-                    ctx.beginPath();
-                    ctx.moveTo(l.start.x,l.start.y);
-                    ctx.lineTo(l.end.x,l.end.y);
-                    // set line color
-                    ctx.lineWidth = 10;
-                    ctx.strokeStyle = '#ff0000';
-                    ctx.stroke();
-                }
-            }
-
             function tick() {
                 compatibility.requestAnimationFrame(tick);
                 stat.new_frame();
@@ -239,8 +128,14 @@
 
     				//jsfeat.imgproc.gaussian_blur(img_u8, img_u8, kernel_size, 0);
 
-    				//20, 50
-    				jsfeat.imgproc.canny(img_u8, img_u8, 32, 73);
+    				//jsfeat.imgproc.canny(img_u8, img_u8, 20, 50);
+    				//jsfeat.imgproc.canny(img_u8, img_u8, 32, 73);
+                    //jsfeat.imgproc.canny(img_u8, img_u8, 50, 90);
+                    //jsfeat.imgproc.canny(img_u8, img_u8, 50, 90);
+                    //jsfeat.imgproc.canny(img_u8, img_u8, 50, 90);
+                    //jsfeat.imgproc.canny(img_u8, img_u8, 70, 110);
+                    //jsfeat.imgproc.canny(img_u8, img_u8, 90, 130);
+                    jsfeat.imgproc.canny(img_u8, img_u8, 130, 180);
 
 
                     // render result back to canvas
@@ -275,6 +170,139 @@
                     stat.stop("bagel");
 
                     $('#log').html(stat.log());
+                }
+            }
+
+
+            function doHoughTransform(h, ctx) {
+                var lines = [];
+                for (var i = 0; i < h.length; i++) {
+
+                    var rho = h[i][0];
+                    var theta = h[i][1];
+
+                    var a = Math.cos(theta);
+                    var b = Math.sin(theta);
+
+                    var x0 = a * rho;
+                    var y0 = b * rho;
+
+                    var pt1 = {};
+                    pt1.x = Math.round(x0 + 1000 * (-b));
+                    pt1.y = Math.round(y0 + 1000 * (a));
+                    var pt2 = {};
+                    pt2.x = Math.round(x0 - 1000 * (-b));
+                    pt2.y = Math.round(y0 - 1000 * (a));
+
+                    //y = mx + b
+                    //b = y - mx
+                    var slope = (pt2.y - pt1.y)/(pt2.x - pt1.x);
+                    var intercept = pt2.y - slope * pt2.x;
+
+                    //line
+                    var line = {};
+                    line.start = pt1;
+                    line.end = pt2;
+                    line.slope = slope;
+                    line.intercept = intercept
+
+                    if(Math.abs(slope) < .2 || Math.abs(slope) > 4) {
+                        //console.log(slope);
+                        lines.push(line);
+                    }
+                }
+
+                //deDupe(lines);
+                //var rectangles = findRectangles(lines);
+                //drawRectangles(rectangles, ctx);
+                drawHoughTransform(lines, ctx);
+
+                return lines;
+            }
+
+            function findRectangles(lines) {
+                //find all rectangles
+                var rectangles = [];
+
+                var mthresh = .2//.1;
+                for (var i = 0; i < lines.length; i++) {
+                    let cornerCount = 0;
+                    let fourLines = []; 
+                    fourLines.push(lines[i]);
+                    var line = lines[i]; //to be changed in the next loop
+                    for(var j = 0; j < lines.length; j++) {
+                        let line2 = lines[j];
+                        let perpendic = Math.abs(line.slope + 1/line2.slope) < mthresh;
+                        if(perpendic) {
+                            cornerCount++;
+                            line = line2;
+                            fourLines.push(line2)
+                        }
+                        //try and close the rectangle
+                        /*
+                        if(cornerCount === 3) {
+                            let lineStart = fourLines[0];
+                            let perpendicStart = Math.abs(lineStart.slope + 1/line2.slope) < mthresh;
+                            if(perpendicStart) {
+                                cornerCount++;
+                                rectangles.push(fourLines);
+                                break;
+                            }
+                        }
+                        */
+                        if(cornerCount === 4) {
+                            rectangles.push(fourLines);
+                            break;
+                        }
+                    }
+                    //if we can't close the rectangle, we'll still add it
+                    if(cornerCount === 3) {
+                        rectangles.push(fourLines);
+                    }
+
+                }
+                if(rectangles.length) {
+                    console.log(rectangles.length);
+                }
+                return rectangles;
+            }
+
+            //eliminate duplicate lines
+            function deDupe(lines) {
+                var bthresh = 1;//5;
+                var mthresh = .2//.1;
+                for (var i = 0; i < lines.length; i++) {
+                    var line = lines[i];
+                    for(var j = 1; j < lines.length; j++) {
+                        let line2 = lines[j];
+                        let bsame = Math.abs(line.intercept - line2.intercept) < bthresh;
+                        let msame = Math.abs(line.slope - line2.slope) < mthresh;
+                        if(bsame && msame) {
+                            lines.splice(j, 1);
+                            j--;
+                        }
+                    }
+                }
+                //console.log(lines.length);
+            }
+
+            function drawRectangles(rectangles, ctx) {
+                for(var i = 0; i < rectangles.length; i++) {
+                    drawHoughTransform(rectangles[i], ctx);
+                }
+            }
+
+            function drawHoughTransform(lines, ctx) {
+                var l = {};
+                for (var i = 0; i < lines.length; i++) {
+                    l = lines[i];
+                    ctx.beginPath();
+                    ctx.moveTo(l.start.x,l.start.y);
+                    ctx.lineTo(l.end.x,l.end.y);
+                    // set line color
+                    ctx.lineWidth = 10;
+                    ctx.strokeStyle = '#ff0000';
+                    ctx.stroke();
                 }
             }
 
